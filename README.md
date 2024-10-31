@@ -1,8 +1,13 @@
 # LangGraph Agentic Chatbot
 
-This repository contains a LangGraph-based chatbot that utilizes Gradio for interface rendering and integrates OpenAI's language model capabilities along with custom tools for enhanced functionality. This project was for me to learn and explore the capabilities of LangGraph and Agnetic workflows.
+This repository contains a LangGraph-based chatbot that utilizes Gradio for interface rendering and integrates OpenAI's language model capabilities and custom tools for enhanced functionality. This project allowed me to learn and explore the capabilities of LangGraph and Agnetic workflows.
 
 ## Tech Stack
+
+
+- **Frontend:**
+
+  - **[Gradio](https://gradio.app/docs)**
 
 - **Backend:**
 
@@ -13,11 +18,7 @@ This repository contains a LangGraph-based chatbot that utilizes Gradio for inte
 - **APIs:**
 
   - **[OpenAI API](https://platform.openai.com/docs)**
-  - **[Tavily Search API](https://tavilyapi.com/docs)** - for search functionalities
-
-- **Interface:**
-
-  - **[Gradio](https://gradio.app/docs)** - for building a user-friendly chatbot UI
+  - **[Tavily Search API](https://tavilyapi.com/docs)**
 
 - **Version Control:**
   - **[Git](https://git-scm.com/doc)**

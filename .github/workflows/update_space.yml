@@ -30,11 +30,12 @@ jobs:
       env:
         HF_TOKEN: ${{ secrets.hf_token }}
 
-    # Use huggingface-cli login to avoid Python interactive issues
+    # Log in to Hugging Face non-interactively
     - name: Log in to Hugging Face
       env:
         HF_TOKEN: ${{ secrets.hf_token }}
-      run: echo "${HF_TOKEN}" | huggingface-cli login
+      run: |
+        python -c 'from huggingface_hub import login; login(token="${HF_TOKEN}")'
 
     - name: Deploy to Spaces
       env:

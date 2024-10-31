@@ -1,5 +1,7 @@
 # LangGraph Agentic Chatbot
 
+Deployed on HuggigFace Spaces. Here is the link to the live site: [https://huggingface.co/spaces/akileshjayakumar/LangGraph-Agentic-Chatbot](https://huggingface.co/spaces/akileshjayakumar/LangGraph-Agentic-Chatbot)
+
 This repository contains a LangGraph-based chatbot that utilizes Gradio for interface rendering and integrates OpenAI's language model capabilities and custom tools for enhanced functionality. This project allowed me to learn and explore the capabilities of LangGraph and Agnetic workflows.
 
 ## Tech Stack

@@ -1,4 +1,4 @@
-name: Deploy Gradio App to Azure from Docker Hub
+name: Deploy Gradio App to Docker Hub
 
 on:
   push:
@@ -7,7 +7,7 @@ on:
   workflow_dispatch: # Allow manual triggering
 
 jobs:
-  deploy:
+  build-and-push:
     runs-on: ubuntu-latest
 
     steps:
@@ -19,17 +19,8 @@ jobs:
       - name: Log in to Docker Hub
         run: echo ${{ secrets.DOCKER_PASSWORD }} | docker login --username ${{ secrets.DOCKER_USERNAME }} --password-stdin
 
-      # Step 3: Build and Push Docker Image to Docker Hub
+      # Step 3: Build and Push Docker Image
       - name: Build and Push Docker Image
         run: |
           docker build -t ${{ secrets.DOCKER_USERNAME }}/gradio-app:latest .
           docker push ${{ secrets.DOCKER_USERNAME }}/gradio-app:latest
-
-      # Step 4: Deploy Docker Image to Azure App Service
-      - name: Deploy to Azure App Service
-        uses: azure/webapps-deploy@v2
-        with:
-          app-name: ${{ secrets.AZURE_APP_NAME }}
-          images: ${{ secrets.DOCKER_USERNAME }}/gradio-app:latest
-          container-username: ${{ secrets.DOCKER_USERNAME }}
-          container-password: ${{ secrets.DOCKER_PASSWORD }}

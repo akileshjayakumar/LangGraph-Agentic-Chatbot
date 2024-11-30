@@ -1,14 +1,15 @@
-# Base image with Python
-FROM python:3.9-slim
+# Use Python 3.10 as the base image to support Gradio
+FROM python:3.10-slim
 
 # Set the working directory inside the container
 WORKDIR /app
 
-# Copy application and infrastructure files
+# Copy the application and dependencies into the container
 COPY ./app /app/app
 COPY ./infra/requirements.txt /app/requirements.txt
 
-# Install dependencies
+# Upgrade pip and install dependencies
+RUN pip install --upgrade pip
 RUN pip install --no-cache-dir -r requirements.txt
 
 # Expose the port for Gradio

@@ -4,7 +4,7 @@ on:
   push:
     branches:
       - main # Trigger workflow on main branch updates
-  workflow_dispatch: # Allow manual triggering of the workflow
+  workflow_dispatch: # Allow manual triggering
 
 jobs:
   deploy:
@@ -15,8 +15,11 @@ jobs:
       - name: Checkout repository code
         uses: actions/checkout@v4
 
-      # Step 2: Set up Docker
-      - name: Build and Run Docker
+      # Step 2: Build and Run Docker
+      - name: Build Docker Image
         run: |
           docker build -t gradio-app -f infra/Dockerfile .
+
+      - name: Run Docker Container
+        run: |
           docker run -d -p 7860:7860 gradio-app

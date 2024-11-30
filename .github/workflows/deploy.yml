@@ -1,4 +1,4 @@
-name: Deploy Gradio App with Docker
+name: Deploy Gradio App to Azure from Docker Hub
 
 on:
   push:
@@ -15,23 +15,21 @@ jobs:
       - name: Checkout repository code
         uses: actions/checkout@v4
 
-      # Step 2: Build and Run Docker
-      - name: Build Docker Image
-        run: |
-          docker build -t gradio-app -f infra/Dockerfile .
+      # Step 2: Log in to Docker Hub
+      - name: Log in to Docker Hub
+        run: echo ${{ secrets.DOCKER_PASSWORD }} | docker login --username ${{ secrets.DOCKER_USERNAME }} --password-stdin
 
-      - name: Run Docker Container
+      # Step 3: Build and Push Docker Image to Docker Hub
+      - name: Build and Push Docker Image
         run: |
-          docker run -d -p 7860:7860 gradio-app
+          docker build -t ${{ secrets.DOCKER_USERNAME }}/gradio-app:latest .
+          docker push ${{ secrets.DOCKER_USERNAME }}/gradio-app:latest
 
-      # Step 3: Install and Run ngrok
-      - name: Install ngrok
-        run: |
-          curl -s https://ngrok-agent.s3.amazonaws.com/ngrok.asc | sudo tee /etc/apt/trusted.gpg.d/ngrok.asc >/dev/null
-          echo "deb https://ngrok-agent.s3.amazonaws.com buster main" | sudo tee /etc/apt/sources.list.d/ngrok.list >/dev/null
-          sudo apt update && sudo apt install ngrok
-          nohup ngrok http 7860 > /dev/null 2>&1 & sleep 5
-
-      - name: Get ngrok Public URL
-        run: |
-          curl -s http://127.0.0.1:4040/api/tunnels | jq -r '.tunnels[0].public_url'
+      # Step 4: Deploy Docker Image to Azure App Service
+      - name: Deploy to Azure App Service
+        uses: azure/webapps-deploy@v2
+        with:
+          app-name: ${{ secrets.AZURE_APP_NAME }}
+          images: ${{ secrets.DOCKER_USERNAME }}/gradio-app:latest
+          container-username: ${{ secrets.DOCKER_USERNAME }}
+          container-password: ${{ secrets.DOCKER_PASSWORD }}

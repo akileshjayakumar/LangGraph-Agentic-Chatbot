@@ -3,8 +3,8 @@ name: Deploy Gradio App to Azure from Docker Hub
 on:
   push:
     branches:
-      - main
-  workflow_dispatch:
+      - main  # Trigger deployment on changes to the main branch
+  workflow_dispatch: # Allow manual triggering of the workflow
 
 jobs:
   deploy:
@@ -12,8 +12,10 @@ jobs:
 
     steps:
       # Step 1: Check out the repository
-      - name: Checkout repository code
+      - name: Checkout repository
         uses: actions/checkout@v4
+        with:
+          fetch-depth: 1 # Fetch only the latest commit for efficiency
 
       # Step 2: Log in to Docker Hub
       - name: Log in to Docker Hub
@@ -30,9 +32,9 @@ jobs:
       - name: Build and Push Docker Image
         uses: docker/build-push-action@v6
         with:
-          context: . # Use the root directory as the build context
-          file: infra/Dockerfile # Specify the Dockerfile path
-          push: true
+          context: . # Set build context to the root of the repository
+          file: infra/Dockerfile # Use the Dockerfile from the 'infra' folder
+          push: true # Push the built image to Docker Hub
           tags: ${{ secrets.DOCKER_USERNAME }}/gradio-app:latest
 
       # Step 5: Log in to Azure
@@ -45,5 +47,5 @@ jobs:
       - name: Deploy to Azure App Service
         uses: azure/webapps-deploy@v2
         with:
-          app-name: ${{ secrets.AZURE_APP_NAME }}
+          app-name: ${{ secrets.AZURE_APP_NAME }} # Name of the Azure App Service
           images: ${{ secrets.DOCKER_USERNAME }}/gradio-app:latest

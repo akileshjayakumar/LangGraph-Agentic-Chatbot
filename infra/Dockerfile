@@ -1,19 +1,17 @@
-# Use Python 3.10 as the base image to support Gradio
+# Use an official Python runtime as a parent image
 FROM python:3.10-slim
 
-# Set the working directory inside the container
+# Set the working directory
 WORKDIR /app
 
-# Copy the application and dependencies into the container
-COPY ./app /app/app
-COPY ./infra/requirements.txt /app/requirements.txt
+# Copy the requirements.txt into the container
+COPY requirements.txt /app/requirements.txt
 
 # Upgrade pip and install dependencies
-RUN pip install --upgrade pip
-RUN pip install --no-cache-dir -r requirements.txt
+RUN pip install --upgrade pip && pip install -r /app/requirements.txt
 
-# Expose the port for Gradio
-EXPOSE 7860
+# Copy the application code into the container
+COPY app /app/app
 
-# Command to run the Gradio app
-CMD ["python", "app/app.py", "--server-name", "0.0.0.0", "--server-port", "7860"]
+# Set the command to run the app
+CMD ["python", "/app/app/app.py"]

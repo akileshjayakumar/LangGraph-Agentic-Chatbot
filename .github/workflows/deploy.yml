@@ -30,6 +30,8 @@ jobs:
       - name: Build and Push Docker Image
         uses: docker/build-push-action@v6
         with:
+          context: infra # Set the build context to the 'infra' directory
+          file: infra/Dockerfile # Specify the path to the Dockerfile
           push: true
           tags: ${{ secrets.DOCKER_USERNAME }}/gradio-app:latest
 

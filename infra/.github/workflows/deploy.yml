@@ -1,0 +1,22 @@
+name: Deploy Gradio App with Docker
+
+on:
+  push:
+    branches:
+      - main  # Trigger workflow on main branch updates
+  workflow_dispatch:  # Allow manual triggering of the workflow
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+      # Step 1: Check out the repository
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      # Step 2: Set up Docker
+      - name: Build and Run Docker
+        run: |
+          docker build -t gradio-app -f infra/Dockerfile .
+          docker run -d -p 7860:7860 gradio-app

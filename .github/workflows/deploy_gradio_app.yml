@@ -3,14 +3,14 @@ name: Deploy Gradio App to GitHub Pages
 on:
   push:
     branches:
-      - main # Adjust this to your main branch name
-  workflow_dispatch: # Allow manual triggering of the workflow
+      - main # Trigger on main branch updates
+  workflow_dispatch: # Allow manual triggering
 
 permissions:
   contents: write
 
 jobs:
-  deploy-gradio:
+  build-and-deploy:
     runs-on: ubuntu-latest
 
     steps:
@@ -29,14 +29,22 @@ jobs:
         run: |
           python -m pip install --upgrade pip
           pip install -r requirements.txt
+          pip install gradio
 
-      # Step 4: Deploy Gradio app dynamically
-      - name: Deploy Gradio App
+      # Step 4: Export static files
+      - name: Build Gradio static site
         env:
-          API_KEY_1: ${{ secrets.OPENAI_API_KEY }}
-          API_KEY_2: ${{ secrets.TAVILY_API_KEY }}
+          OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
+          TAVILY_API_KEY: ${{ secrets.TAVILY_API_KEY }}
+        run: |
+          python agent/app.py --export-static-files
+          mv agent/exported_files/* .  # Move static files to the root for Pages to serve
 
+      # Step 5: Commit changes to main
+      - name: Commit and push changes
         run: |
           git config --global user.email "akileshjayakumar88@gmail.com"
           git config --global user.name "Akilesh Jayakumar"
-          python agent/app.py --server-name 0.0.0.0 --server-port 8000
+          git add -A
+          git commit -m "Update static site $(date +'%Y-%m-%d')"
+          git push

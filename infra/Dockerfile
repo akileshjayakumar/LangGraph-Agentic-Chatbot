@@ -5,7 +5,7 @@ FROM python:3.10-slim
 WORKDIR /app
 
 # Copy the requirements.txt into the container
-COPY requirements.txt /app/requirements.txt
+COPY infra/requirements.txt /app/requirements.txt
 
 # Upgrade pip and install dependencies
 RUN pip install --upgrade pip && pip install -r /app/requirements.txt

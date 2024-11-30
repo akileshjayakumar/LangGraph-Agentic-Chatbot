@@ -30,7 +30,7 @@ jobs:
       - name: Build and Push Docker Image
         uses: docker/build-push-action@v6
         with:
-          context: . # Set build context to the root of the repository
+          context: . # Use the root directory as the build context
           file: infra/Dockerfile # Specify the Dockerfile path
           push: true
           tags: ${{ secrets.DOCKER_USERNAME }}/gradio-app:latest

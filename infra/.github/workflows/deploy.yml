@@ -3,8 +3,8 @@ name: Deploy Gradio App with Docker
 on:
   push:
     branches:
-      - main  # Trigger workflow on main branch updates
-  workflow_dispatch:  # Allow manual triggering of the workflow
+      - main # Trigger workflow on main branch updates
+  workflow_dispatch: # Allow manual triggering of the workflow
 
 jobs:
   deploy:

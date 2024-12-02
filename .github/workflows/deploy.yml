@@ -46,13 +46,19 @@ jobs:
       # Step 6: Create App Service if it doesn't exist
       - name: Create App Service if Missing
         run: |
-          RESOURCE_GROUP=$(echo ${{ secrets.AZURE_CREDENTIALS }} | jq -r '.resourceGroup')
-          REGION=$(echo ${{ secrets.AZURE_CREDENTIALS }} | jq -r '.region')
-          APP_SERVICE_PLAN=$(echo ${{ secrets.AZURE_CREDENTIALS }} | jq -r '.appServicePlan')
+          # Extract relevant fields from AZURE_CREDENTIALS
+          RESOURCE_GROUP=$(echo '${{ secrets.AZURE_CREDENTIALS }}' | jq -r '.resourceGroup')
+          REGION=$(echo '${{ secrets.AZURE_CREDENTIALS }}' | jq -r '.region')
+          APP_SERVICE_PLAN=$(echo '${{ secrets.AZURE_CREDENTIALS }}' | jq -r '.appServicePlan')
 
+          # Ensure Resource Group exists
           az group create --name "$RESOURCE_GROUP" --location "$REGION"
+
+          # Ensure App Service Plan exists
           az appservice plan create --name "$APP_SERVICE_PLAN" \
             --resource-group "$RESOURCE_GROUP" --sku B1 --is-linux
+
+          # Ensure App Service exists, create if missing
           if ! az webapp show --name ${{ secrets.AZURE_APP_NAME }} --resource-group "$RESOURCE_GROUP"; then
             az webapp create --resource-group "$RESOURCE_GROUP" \
               --plan "$APP_SERVICE_PLAN" \

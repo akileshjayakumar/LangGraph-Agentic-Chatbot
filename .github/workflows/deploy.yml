@@ -43,9 +43,22 @@ jobs:
         with:
           creds: ${{ secrets.AZURE_CREDENTIALS }}
 
-      # Step 6: Deploy Docker Image to Azure App Service
+      # Step 6: Create App Service if it doesn't exist
+      - name: Create App Service if Missing
+        run: |
+          az group create --name <your-resource-group> --location <your-region>
+          az appservice plan create --name <your-app-service-plan> --resource-group <your-resource-group> --sku B1 --is-linux
+          az webapp show --name ${{ secrets.AZURE_APP_NAME }} --resource-group <your-resource-group> || \
+          az webapp create --resource-group <your-resource-group> --plan <your-app-service-plan> \
+            --name ${{ secrets.AZURE_APP_NAME }} \
+            --runtime "DOCKER|latest" \
+            --deployment-container-image-name ${{ secrets.DOCKER_USERNAME }}/gradio-app:latest
+        env:
+          AZURE_APP_NAME: ${{ secrets.AZURE_APP_NAME }}
+
+      # Step 7: Deploy Docker Image to Azure App Service
       - name: Deploy to Azure App Service
         uses: azure/webapps-deploy@v2
         with:
-          app-name: ${{ secrets.AZURE_APP_NAME }} # Name of the Azure App Service
+          app-name: ${{ secrets.AZURE_APP_NAME }}
           images: ${{ secrets.DOCKER_USERNAME }}/gradio-app:latest
